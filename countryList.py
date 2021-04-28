@@ -12,12 +12,12 @@ print(land)
 landnamn = df["Country/Region"].to_numpy()
 print(landnamn)
 
-dictonary = {}
+# dictonary = {}
 
-for i in land:
-    for j in landnamn:
-        dictonary[str(j)]=int(i)
-print(dictonary)
+# for i in land:
+#     for j in landnamn:
+#         dictonary[str(j)]=int(i)
+# print(dictonary)
 """
 print(df.iloc[:,-1])
 print("\n")
