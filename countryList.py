@@ -3,14 +3,17 @@ import numpy as np
 
 def home():
     df=pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
-    print(df.head())
+    #print(df.head())
     return(df)
 
 df = home()
-land = np.array([df.iloc[:,-1]])
+#land = np.array([df.iloc[:,-1]])
+land = [df.iloc[:,-1]]
 print(land)
-landnamn = df["Country/Region"].to_numpy()
+landnamn = df["Country/Region"]#.to_numpy()
 print(landnamn)
+
+print(type(landnamn))
 
 # dictonary = {}
 
