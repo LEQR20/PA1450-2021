@@ -20,19 +20,38 @@ def tableSorter(df):
     sortedList = countryList.sort_values(index[-1], axis=0, ascending=False) #Sorts the new DF in descending order based on total cases
     return(sortedList)
 
+def tmp(group_series):
+    if (group_series==group_series.iloc[0]).all():
+        return group_series.iloc[0]
+    else:
+        return group_series.sum()
+
+
 
 df = home()
 table = tableSorter(df)
 #print(table)
 
-
 index = list(df.columns) #Creates a list of all column-names for use as index
 date = index[-1]
+
+#table = table.groupby(index[1])[date].apply(lambda x: x.ffill().bfill())
+
+#dfList = list
+# for i in table:
+#     if i in dfList:
+#         table
+#     else:
+#         dfList.append(i)
+
+
+table.groupby(index[1]).agg(tmp)
 
 (mo, da, ye) = date.split('/')
 date = da+'/'+mo+'/'+ye
 
 tableDateFixed = table.rename(columns = {index[-1]: date}, inplace = False)
+
 
 fig2 = ff.create_table(tableDateFixed)
 
