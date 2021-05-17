@@ -68,11 +68,13 @@ tableDateFixed = table.rename(columns = {'Total': date}, inplace = False) #Renam
 pd.options.display.float_format = '{:,}'.format
 
 fig2 = ff.create_table(tableDateFixed)
+fig3 = ff.create_table(newCases(df))
 
 fig = px.bar(df, x ='Country/Region', y=index[-1])
 
 fig = fig.to_html()
 fig2 = fig2.to_html()
+fig3 = fig3.to_html()
 
 html_str = ''' <DOCTYPE html>
 <html>
@@ -88,6 +90,7 @@ html_str = ''' <DOCTYPE html>
 <h1>Corona statistics</h1>
 <p> ''' + fig +''' </p>
 <p> ''' + fig2 + ''' </p>
+<p> ''' + fig3 + ''' </p>
 </body>
 </html>'''
 
