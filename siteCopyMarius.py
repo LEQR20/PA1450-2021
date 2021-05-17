@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
+#from dash_table.Format import Format, Group, Scheme, Symbol
 
 
 def home():
@@ -23,7 +24,6 @@ def tableSorter(df):
 
 df = home()
 table = tableSorter(df)
-#print(table)
 
 index = list(df.columns) #Creates a list of all column-names for use as index
 date = index[-1] #Since the last index in the list is the relevant date it's made into the variable 'date'
@@ -31,12 +31,14 @@ date = index[-1] #Since the last index in the list is the relevant date it's mad
 table['Total'] = table.groupby([index[1]])[date].transform('sum') #Sums the value of duplicaterows
 table.drop(date, axis='columns', inplace=True) #Drops the old date column
 table = table.drop_duplicates(subset=[index[1]]) #Drops country duplicates
+table['Total'] = table['Total'].apply('{:,}'.format) #Adds a comma for every 3rd number in totalcases for easier reading
 
 (mo, da, ye) = date.split('/') #Splits the date into three variables; month, day and year
 date = da+'/'+mo+'/'+ye #Puts the date back into one variable but in the correct [;)] order (day, month, year)
 
 tableDateFixed = table.rename(columns = {'Total': date}, inplace = False) #Renames the cmbined cases column frot 'Total' to the correct date
 
+pd.options.display.float_format = '{:,}'.format
 
 fig2 = ff.create_table(tableDateFixed)
 
