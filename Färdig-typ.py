@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-#from urllib.request import urlretrieve
 import csv
 import matplotlib.pyplot as plt
 import plotly.express as px
@@ -23,53 +22,28 @@ def tableSorter(df):
 
 df = home()
 table = tableSorter(df)
-print(table)
-#table.to_html('Table2.html')
-# urlretrieve('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv', "data.csv")
-
-# x = []
-# y =[]
-
-# with open('data.csv','r') as csvfile:
-#     csv_reader = csv.reader(csvfile)
-
-
-#     plots = csv.reader(csvfile, delimiter=',')
-#     for row in plots:
-#         x.append((row[1]))
-#         y.append((row[-1]))
 
 index = list(df.columns) #Creates a list of all column-names for use as index
-# plt.bar(x=df.iloc[:,[1]],y=df.iloc[:,[-1]], label='Loaded from file!')
-# plt.xlabel('x')
-# plt.ylabel('y')
-# plt.title('Interesting Graph\nCheck it out')
-# plt.legend()
-# plt.show() 
-########
-# df.plot(x ='Country/Region', y=index[-1], kind = 'bar', fontsize=6)
-# #df.plot(figsize=(10,10))
-# plt.ylabel('Total Cases')
-# plt.savefig('plot.png', dpi=300, bbox_inches='tight')
+date = index[-1] #Since the last index in the list is the relevant date it's made into the variable 'date'
 
-# plt.show()
-#########
+table['Total'] = table.groupby([index[1]])[date].transform('sum') #Sums the value of duplicaterows
+table.drop(date, axis='columns', inplace=True) #Drops the old date column
+table = table.drop_duplicates(subset=[index[1]]) #Drops country duplicates
+table['Total'] = table['Total'].apply('{:,}'.format) #Adds a comma for every 3rd number in totalcases for easier reading
 
+(mo, da, ye) = date.split('/') #Splits the date into three variables; month, day and year
+date = da+'/'+mo+'/'+ye #Puts the date back into one variable but in the correct [;)] order (day, month, year)
 
+tableDateFixed = table.rename(columns = {'Total': date}, inplace = False) #Renames the cmbined cases column frot 'Total' to the correct date
 
-fig2 = ff.create_table(table)
+pd.options.display.float_format = '{:,}'.format
+
+fig2 = ff.create_table(tableDateFixed)
 
 fig = px.bar(df, x ='Country/Region', y=index[-1])
 
 fig = fig.to_html()
 fig2 = fig2.to_html()
-# with open('2.html','a') as f:
-#     f.write('<p> Corona statistics </p>')
-# with open('2.html','w') as f:
-#     f.write(fig.to_html(full_html=False))
-# with open('2.html','a') as f:
-#     f.write(fig2.to_html(full_html=False))
-
 
 html_str = ''' <DOCTYPE html>
 <html>
