@@ -26,15 +26,16 @@ table = tableSorter(df)
 #print(table)
 
 index = list(df.columns) #Creates a list of all column-names for use as index
-date = index[-1]
+date = index[-1] #Since the last index in the list is the relevant date it's made into the variable 'date'
 
-"""Tror detta är en bit på vägen, men än så länge returneras hela datumraden som NULL :/"""
-#table.iloc[:, [-1]] = table.groupby(index[1]).sum()
+table['Total'] = table.groupby([index[1]])[date].transform('sum') #Sums the value of duplicaterows
+table.drop(date, axis='columns', inplace=True) #Drops the old date column
+table = table.drop_duplicates(subset=[index[1]]) #Drops country duplicates
 
-(mo, da, ye) = date.split('/')
-date = da+'/'+mo+'/'+ye
+(mo, da, ye) = date.split('/') #Splits the date into three variables; month, day and year
+date = da+'/'+mo+'/'+ye #Puts the date back into one variable but in the correct [;)] order (day, month, year)
 
-tableDateFixed = table.rename(columns = {index[-1]: date}, inplace = False)
+tableDateFixed = table.rename(columns = {'Total': date}, inplace = False) #Renames the cmbined cases column frot 'Total' to the correct date
 
 
 fig2 = ff.create_table(tableDateFixed)
