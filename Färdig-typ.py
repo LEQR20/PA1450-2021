@@ -34,7 +34,7 @@ def newCases(df):
     while index < len(newTotal):
         newCasesList.append(newTotal[index]-oldTotal[index])
         index += 1
-    
+
     countryList = df.iloc[:,[1]]
     countryList['New Cases'] = newCasesList
     sortedList = countryList.sort_values('New Cases', axis=0, ascending=False)
@@ -58,6 +58,7 @@ date = index[-1] #Since the last index in the list is the relevant date it's mad
 table['Total'] = table.groupby([index[1]])[date].transform('sum') #Sums the value of duplicaterows
 table.drop(date, axis='columns', inplace=True) #Drops the old date column
 table = table.drop_duplicates(subset=[index[1]]) #Drops country duplicates
+table = table.sort_values(by='Total', ascending=False) #Sorts the values again after summerising of duplicates
 table['Total'] = table['Total'].apply('{:,}'.format) #Adds a comma for every 3rd number in totalcases for easier reading
 
 (mo, da, ye) = date.split('/') #Splits the date into three variables; month, day and year
