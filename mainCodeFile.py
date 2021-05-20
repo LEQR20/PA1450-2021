@@ -95,6 +95,6 @@ html_str = ''' <DOCTYPE html>
 </body>
 </html>'''
 
-html_file = open('2.html','w')
+html_file = open('Corona_statistics.html','w')
 html_file.write(html_str)
 html_file.close()
