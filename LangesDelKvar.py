@@ -119,7 +119,7 @@ body {
   <a class="Coronamenu" href="test.html">CoronaStats</a>
   <a href="test2.html">CoronaShart</a>
   <a href="test3.html">Compare</a>
-  <a href="test4.html">something</a>
+  <a href="test4.html">CovidByPopulation</a>
 </div>
 <h1>Covid Stats</h1>
 <center><p> ''' + fig +''' </p></center>
@@ -178,7 +178,7 @@ p2{
   <a class="Coronamenu" href="test.html">CoronaStats</a>
   <a href="test2.html">CoronaChart</a>
   <a href="test3.html">Compare</a>
-  <a href="test4.html">something</a>
+  <a href="test4.html">CovidByPopulation</a>
 </div>
 <h1>Covid Chart</h1>
 <p> ''' + fig2 +''' </p>
@@ -233,7 +233,7 @@ body {
   <a class="Coronamenu" href="test.html">CoronaStats</a>
   <a href="test2.html">CoronaShart</a>
   <a href="test3.html">Compare</a>
-  <a href="test4.html">something</a>
+  <a href="test4.html">CovidByPopulation</a>
 </div>
 <h1>Covid Stats</h1>
 <center><p> ''' + fig5 +''' </p></center>
@@ -283,7 +283,7 @@ body {
   <a class="Coronamenu" href="test.html">CoronaStats</a>
   <a href="test2.html">CoronaShart</a>
   <a href="test3.html">Compare</a>
-  <a href="test4.html">something</a>
+  <a href="test4.html">CovidByPopulation</a>
 </div>
 <h1>Covid Stats</h1>
 <center><p> ''' + fig5 +''' </p></center>
