@@ -7,6 +7,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
 import plotly
+import datapackage
 
 def home():
     """Downloads the csv-file of the data"""
@@ -19,7 +20,32 @@ def tableSorter(df):
     countryList = df.iloc[:, [1,-1]] #Creates a DF of the country- and total cases-column
     sortedList = countryList.sort_values(index[-1], axis=0, ascending=False) #Sorts the new DF in descending order based on total cases
     return(sortedList)
+def new_cases_modified(df):
+    """Creates a new cases wich displays the new cases per country"""
+    #col_one_list = df['one'].tolist()
+    dfIndex = list(df.columns)
+    newCasesList = list()
+    newTotal = df[dfIndex[-1]].tolist()
+    
+    oldTotal = df[dfIndex[-2]].tolist()
+    
+    index = 0
+    while index < len(newTotal):
+        newCasesList.append(newTotal[index]-oldTotal[index])
+        index += 1
 
+    countryList = df.iloc[:,[1]]
+    countryList['New Cases'] = newCasesList
+    sortedList = countryList.sort_values('New Cases', axis=0, ascending=False)
+
+    sortedList['Total'] = sortedList.groupby(['New Cases'])['New Cases'].transform('sum') #Sums the value of duplicaterows
+    sortedList.drop('New Cases', axis='columns', inplace=True) #Drops the old date column
+    sortedList = sortedList.drop_duplicates(subset=[dfIndex[1]]) #Drops country duplicates
+    #sortedList['Total'] = sortedList['Total'].apply('{:.}'.format) #Adds a comma for every 3rd number in totalcases for easier reading
+
+    sortedList = sortedList.rename(columns = {'Total': 'New Cases'}, inplace = False)
+
+    return(sortedList)
 def newCases(df):
     """Creates a new cases wich displays the new cases per country"""
     #col_one_list = df['one'].tolist()
@@ -46,7 +72,56 @@ def newCases(df):
     sortedList = sortedList.rename(columns = {'Total': 'New Cases'}, inplace = False)
 
     return(sortedList)
+def cases_per_capita(df, df3):
 
+    
+
+    data_url = "https://datahub.io/JohnSnowLabs/population-figures-by-country/datapackage.json"
+
+    package = datapackage.Package(data_url)
+
+    # to load only tabular data
+    resources = package.resources
+    for resource in resources:
+        if resource.tabular:
+            df2 = pd.read_csv(resource.descriptor['path'])
+    df3 = new_cases_modified(df)
+
+    dct2 = {}
+    list_of_countries_sorted = df3['Country/Region'].tolist()
+    new_cases_per_sorted_country = df3.iloc[:, -1].tolist()
+    
+
+    dct = {}
+    result_dict = {}
+
+    for i in list_of_countries_sorted:
+        value = df2.loc[df2['Country'] == str(i)]['Year_2016'].tolist()
+        for j in value:
+            dct[str(i)] = j
+
+    for key, value in dct.items():
+        if key not in list_of_countries_sorted:
+            print(key)
+
+    for (country, value) in zip(list_of_countries_sorted, new_cases_per_sorted_country):
+        dct2[str(country)] = value
+
+
+    country_list = []
+    cases_Capita = []
+
+    for keys in dct.keys():
+        country_list.append(keys)
+
+    for (key1, value1), (key2, value2) in zip(dct.items(), dct2.items()):
+        per_capita = value2 / value1
+        cases_Capita.append(per_capita)
+
+    for (i, j) in zip(country_list, cases_Capita):
+        result_dict[i] = str(j)
+
+    return result_dict
 
 df = home()
 table = tableSorter(df)
@@ -77,6 +152,16 @@ fig = px.bar(df, x ='Country/Region', y=index[-1],width=800, height=400)
 fig = fig.to_html()
 fig2 = fig2.to_html()
 fig3 = fig3.to_html()
+
+dict_of_stuff = cases_per_capita(df,new_cases_modified(df))
+countries = []
+capita_cases = []
+for key, value in dict_of_stuff.items():
+    countries.append(key)
+    capita_cases.append(value)
+
+fig4 = px.bar(x=countries, y=capita_cases)
+fig4 = fig4.to_html()
 
 html_str = ''' <DOCTYPE html>
 <html>
@@ -119,7 +204,7 @@ body {
   <a class="Coronamenu" href="test.html">CoronaStats</a>
   <a href="test2.html">CoronaShart</a>
   <a href="test3.html">Compare</a>
-  <a href="test4.html">CovidByPopulation</a>
+  <a href="test4.html">CasesPerCapita</a>
 </div>
 <h1>Covid Stats</h1>
 <center><p> ''' + fig +''' </p></center>
@@ -178,7 +263,7 @@ p2{
   <a class="Coronamenu" href="test.html">CoronaStats</a>
   <a href="test2.html">CoronaChart</a>
   <a href="test3.html">Compare</a>
-  <a href="test4.html">CovidByPopulation</a>
+  <a href="test4.html">CasesPerCapita</a>
 </div>
 <h1>Covid Chart</h1>
 <p> ''' + fig2 +''' </p>
@@ -233,7 +318,7 @@ body {
   <a class="Coronamenu" href="test.html">CoronaStats</a>
   <a href="test2.html">CoronaShart</a>
   <a href="test3.html">Compare</a>
-  <a href="test4.html">CovidByPopulation</a>
+  <a href="test4.html">CasesPerCapita</a>
 </div>
 <h1>Covid Stats</h1>
 <center><p> ''' + fig5 +''' </p></center>
@@ -283,7 +368,7 @@ body {
   <a class="Coronamenu" href="test.html">CoronaStats</a>
   <a href="test2.html">CoronaShart</a>
   <a href="test3.html">Compare</a>
-  <a href="test4.html">CovidByPopulation</a>
+  <a href="test4.html">CasesPerCapita</a>
 </div>
 <h1>Covid Stats</h1>
 <center><p> ''' + fig5 +''' </p></center>
@@ -291,9 +376,64 @@ body {
 </body>
 </html>'''
 
+
+html_str7 = ''' <DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style> 
+h1{color: White;}
+h1{text-align:center;}
+body {
+  background-image: url('corona.jpeg');
+}
+.meny {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.meny a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.meny a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.meny a.active {
+  background-color: #04AA6D;
+  color: white;
+}
+
+</style>
+</head>
+<body> 
+<div class="meny">
+  <a class="Coronamenu" href="test.html">CoronaStats</a>
+  <a href="test2.html">CoronaShart</a>
+  <a href="test3.html">Compare</a>
+  <a href="test4.html">CasesPerCapita</a>
+</div>
+<h1>Covid Stats</h1>
+<center><p> ''' + fig4 +''' </p></center>
+
+</body>
+</html>'''
+
+
 html_file = open('test.html','w')
 html_file.write(html_str)
 html_file.close()
+
+html_file7 = open('test4.html','w')
+html_file7.write(html_str7)
+html_file7.close()
 
 html_file2 = open('test2.html','w')
 html_file2.write(html_str2)
