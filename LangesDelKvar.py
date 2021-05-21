@@ -20,6 +20,7 @@ def tableSorter(df):
     countryList = df.iloc[:, [1,-1]] #Creates a DF of the country- and total cases-column
     sortedList = countryList.sort_values(index[-1], axis=0, ascending=False) #Sorts the new DF in descending order based on total cases
     return(sortedList)
+
 def new_cases_modified(df):
     """Creates a new cases wich displays the new cases per country"""
     #col_one_list = df['one'].tolist()
@@ -46,6 +47,7 @@ def new_cases_modified(df):
     sortedList = sortedList.rename(columns = {'Total': 'New Cases'}, inplace = False)
 
     return(sortedList)
+
 def newCases(df):
     """Creates a new cases wich displays the new cases per country"""
     #col_one_list = df['one'].tolist()
@@ -72,6 +74,7 @@ def newCases(df):
     sortedList = sortedList.rename(columns = {'Total': 'New Cases'}, inplace = False)
 
     return(sortedList)
+    
 def cases_per_capita(df, df3):
 
     
