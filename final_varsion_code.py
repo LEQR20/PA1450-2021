@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-#from urllib.request import urlretrieve
 import csv
 import matplotlib.pyplot as plt
 import plotly.express as px
@@ -76,9 +75,6 @@ def newCases(df):
     return(sortedList)
     
 def cases_per_capita(df, df3):
-
-    
-
     data_url = "https://datahub.io/JohnSnowLabs/population-figures-by-country/datapackage.json"
 
     package = datapackage.Package(data_url)
@@ -150,7 +146,6 @@ fig3 = ff.create_table(newCases(df))
 fig3.layout.width=400
 
 fig = px.bar(df, x ='Country/Region', y=index[-1],width=800, height=400)
-
 
 fig = fig.to_html()
 fig2 = fig2.to_html()
